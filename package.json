@@ -1,0 +1,33 @@
+{
+  "name": "grant-bartlett-web-portfolio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13"
+  },
+  "devDependencies": {
+    "bootstrap": "^3.3.2",
+    "grunt-concurrent": "^1.0.0",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-less": "^1.0.0",
+    "grunt-contrib-uglify": "^0.8.0",
+    "grunt-contrib-watch": "^0.6.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GrantBartlett/website-portfolio.git"
+  },
+  "keywords": [
+  ],
+  "author": "Grant Bartlett <hello@grant-bartlett.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "#"
+  },
+  "homepage": "#"
+}
