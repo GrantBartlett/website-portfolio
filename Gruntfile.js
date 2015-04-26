@@ -20,7 +20,7 @@ module.exports = function (grunt) {
             },
             dist: {
                 src: js_src_files,
-                dest: 'dist/js/app.js'
+                dest: 'dist/assets/js/app.js'
             }
         },
 
@@ -31,7 +31,7 @@ module.exports = function (grunt) {
             },
             build: {
                 src: js_src_files,
-                dest: 'dist/js/app.min.js'
+                dest: 'dist/assets/js/app.min.js'
             }
         },
 
@@ -42,7 +42,7 @@ module.exports = function (grunt) {
                     compress: false
                 },
                 files: {
-                    "dist/css/main.css": "src/less/main.less"
+                    "dist/assets/css/main.css": "src/less/main.less"
                 }
             },
             build: {
@@ -50,13 +50,13 @@ module.exports = function (grunt) {
                     paths: ["src/css"],
 
                     modifyVars: {
-                        imgPath: '"dist/images/"',
+                        imgPath: '"dist/assets/images/"',
                         bgColor: 'red'
                     },
                     compress: true
                 },
                 files: {
-                    "dist/css/main.min.css": "src/less/main.less"
+                    "dist/assets/css/main.min.css": "src/less/main.less"
                 }
             }
         },
