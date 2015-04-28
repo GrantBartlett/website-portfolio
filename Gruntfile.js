@@ -1,101 +1,102 @@
 module.exports = function (grunt) {
-
-    var js_src_files = [
-        'src/components/jquery-placeholder/jquery.placeholder.min.js',
-        'node_modules/parsleyjs/dist/parsley.min.js',
-        'src/js/*.js'
-    ];
-
     // Project configuration.
     grunt.initConfig({
 
         pkg: grunt.file.readJSON('package.json'),
 
-
-        // within grunt.initConfig
-        concat: {
-            options: {
-                separator: ';\n',
-                mangle: false
+        browserify: {
+            vendor: {
+                src: [],
+                dest: 'dist/assets/js/vendor.js',
+                options: {
+                    require: ['jquery']
+                }
             },
-            dist: {
-                src: js_src_files,
-                dest: 'dist/assets/js/app.js'
+
+            watchClient: {
+                src: ['src/**/*.js'],
+                dest: 'dist/assets/js/app.js',
+                options: {
+                    external: ['jQuery', 'momentWrapper'],
+                    watch: true
+                }
             }
         },
 
-        uglify: {
-            options: {
-                banner: '\n',
-                mangle: true
-            },
-            build: {
-                src: js_src_files,
-                dest: 'dist/assets/js/app.min.js'
+        concat: {
+            'dist/assets/js/concat.js': ['dist/assets/js/vendor.js', 'dist/assets/js/app.js']
+        },
+
+        copy: {
+            main: {
+                files: [
+                    // includes files within path
+                    {
+                        expand: true, cwd: 'node_modules/font-awesome/', src: ['fonts/*'], dest: 'dist/assets/', filter: 'isFile'
+                    },
+                    {
+                        expand: true, cwd: 'node_modules/slick-carousel/slick', src: ['fonts/*'], dest: 'dist/assets/', filter: 'isFile'
+                    }
+                ]
             }
         },
 
         less: {
-            dev: {
+            development: {
                 options: {
-                    paths: ["src/css"],
-                    compress: false
+                    paths: ['src/less/**']
                 },
                 files: {
-                    "dist/assets/css/main.css": "src/less/main.less"
+                    'dist/assets/css/main.css' : 'src/less/main.less'
                 }
             },
-            build: {
+            production: {
                 options: {
-                    paths: ["src/css"],
-
-                    modifyVars: {
-                        imgPath: '"dist/assets/images/"',
-                        bgColor: 'red'
-                    },
-                    compress: true
+                    paths: ['assets/css'],
+                    plugins: [
+                        new (require('less-plugin-autoprefix'))({browsers: ['last 2 versions']}),
+                        new (require('less-plugin-clean-css'))({advanced: true})
+                    ]
                 },
                 files: {
-                    "dist/assets/css/main.min.css": "src/less/main.less"
+                    'dist/assets/css/main.min.css': 'src/less/main.less'
                 }
             }
         },
 
         watch: {
+            concat: {
+                files: ['dist/assets/js/app.js'],
+                tasks: ['concat']
+            },
+
+            less: {
+                // We watch and compile sass files as normal but don't live reload here
+                files: ['src/less/*.less'],
+                tasks: ['less']
+            },
+
             options: {
                 dateFormat: function (time) {
                     grunt.log.writeln('Finished watching in ' + time + ' ms at' + (new Date()).toString());
-                },
-                livereload: true
-            },
-            scripts: {
-                files: 'src/js/*.js',
-                tasks: ['concurrent:compress']
-            },
-
-            css: {
-                files: 'src/*/*.less',
-                tasks: ['concurrent:compress']
-            }
-        },
-
-        concurrent: {
-            compress: ['less', 'concat', 'uglify'],
-            start: {
-                tasks: ['watch'],
-                options: {
-                    logConcurrentOutput: true
                 }
             }
         }
+
     });
 
-    grunt.loadNpmTasks('grunt-concurrent');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
+    //grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-browserify');
 
     // Default task(s).
-    grunt.registerTask('default', ['concurrent']);
+    grunt.registerTask('default', ['browserify', 'watch']);
+    grunt.registerTask('init', ['copy', 'watch']);
+
+    grunt.registerTask('exit', 'Just exits.', function() {
+        process.exit(0);
+    });
 };
